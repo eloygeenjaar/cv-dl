@@ -44,9 +44,9 @@ Citation: <cite> Aytekin, C., Ni, X., Cricri, F., & Aksu, E. (2018, July). Clust
   algorithm
 * Dense AEs are evaluated on MNIST, convolutional AEs on MNIST, USPS
 * Dense AEs used: 
-⋅⋅* (I)DEC: encoding layers: 500 - 500 - 2000 - 10, decoding layers: 2000 - 500 - 500 - d -> trained 100 epochs
+  * (I)DEC: encoding layers: 500 - 500 - 2000 - 10, decoding layers: 2000 - 500 - 500 - d -> trained 100 epochs
 * Convolutional AEs used:
-⋅⋅* DCEC: encoding: 5x5 (32), 5x5 (64), 3x3 (128). 2x2 stride. decoding: 3x3
+  * DCEC: encoding: 5x5 (32), 5x5 (64), 3x3 (128). 2x2 stride. decoding: 3x3
 (64), 5x5 (32), 5x5 (1) -> trained 200 epochs
 
 #### Proposed normalization vs other normalizations:
@@ -57,7 +57,7 @@ Citation: <cite> Aytekin, C., Ni, X., Cricri, F., & Aksu, E. (2018, July). Clust
 * Used AUC of ROC for evaluation
 * Choose one class as anomaly, use DCEC with proposed L2 norm, k=9
 * Baselines: 
-⋅⋅* DCEC without proposed L2 norm
-⋅⋅* DCEC with proposed L2 norm, but with reconstrution error per sample as
+  * DCEC without proposed L2 norm
+  * DCEC with proposed L2 norm, but with reconstrution error per sample as
 anomaly sore
 
