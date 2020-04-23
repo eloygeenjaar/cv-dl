@@ -2,4 +2,7 @@
 
 1) Read [this paper](https://ieeexplore.ieee.org/abstract/document/8489068)
 2) Reproduce the aforementioned paper
-2) Think about applications in crowd anomaly detection
+3) Think about applications in crowd anomaly detection
+
+--- 
+Some takeaways from the paper
