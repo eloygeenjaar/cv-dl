@@ -6,6 +6,8 @@
 
 Citation: <cite> Aytekin, C., Ni, X., Cricri, F., & Aksu, E. (2018, July). Clustering and unsupervised anomaly detection with l 2 normalized deep auto-encoder representations. In 2018 International Joint Conference on Neural Networks (IJCNN) (pp. 1-6). IEEE. <cite>
 
+
+[USPS dataset](http://ieeexplore.ieee.org/document/291440/)
 --- 
 ## Some takeaways from the paper
 
