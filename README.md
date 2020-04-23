@@ -35,11 +35,11 @@ Citation: <cite> Aytekin, C., Ni, X., Cricri, F., & Aksu, E. (2018, July). Clust
 1. Train on full dataset, anomalies + 'normal' samples
 2. After training the l2 normalized autoencoder representations are clustered
   using k-means
-3. Use normality score: <img src="https://latex.codecogs.com/svg.latex?\Large&space;v_{i}=max_{j}(E_{c}(I_{i}))\frac{C_{j}}{||C_{j}||_{2}}" title="v_{i}=max_{j}(E_{c}(I_{i}))\frac{C_{j}}{||C_{j}||_{2}}" /> on k-means clusters (C), representations (E(I))
+3. Use normality score: $v_{i}=max_{j}(E_{c}(I_{i}))\frac{C_{j}}{||C_{j}||_{2}}$ on k-means clusters (C), representations (E(I))
 4. Use threshold to separate 'normal' samples from anomalies
 
 ### Experimental results
-* Evaluation metric: <img src="https://latex.codecogs.com/svg.latex?\Large&space;acc=max_{m}\frac{\sum_{i=1}^{n}1{l_{i}=m(c_{i})}{n}" title="acc=max_{m}\frac{\sum_{i=1}^{n}1{l_{i}=m(c_{i})}{n}" /> simply: the maximum number of correctly classified images according to each of the possible cluster (c) mappings (m) to classes (l). 
+* Evaluation metric: $acc=max_{m}\frac{\sum_{i=1}^{n}1{l_{i}=m(c_{i})}{n}$ simply: the maximum number of correctly classified images according to each of the possible cluster (c) mappings (m) to classes (l). 
 * Maximization of the evaluation metric is done according to the Hungarian
   algorithm
 * Dense AEs are evaluated on MNIST, convolutional AEs on MNIST, USPS
