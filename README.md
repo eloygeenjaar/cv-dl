@@ -46,9 +46,9 @@ Citation: <cite> Aytekin, C., Ni, X., Cricri, F., & Aksu, E. (2018, July). Clust
   algorithm
 * Dense AEs are evaluated on MNIST, convolutional AEs on MNIST, USPS
 * Dense AEs used: 
-  * (I)DEC: encoding layers: 500 - 500 - 2000 - 10, decoding layers: 2000 - 500 - 500 - d -> trained 100 epochs
+  * [IDEC](https://github.com/XifengGuo/IDEC) & [DEC](https://github.com/XifengGuo/DEC-keras): encoding layers: 500 - 500 - 2000 - 10, decoding layers: 2000 - 500 - 500 - d -> trained 100 epochs
 * Convolutional AEs used:
-  * DCEC: encoding: 5x5 (32), 5x5 (64), 3x3 (128). 2x2 stride. decoding: 3x3
+  * [DCEC](https://github.com/XifengGuo/DCEC): encoding: 5x5 (32), 5x5 (64), 3x3 (128). 2x2 stride. decoding: 3x3
 (64), 5x5 (32), 5x5 (1) -> trained 200 epochs
 
 #### Proposed normalization vs other normalizations:
