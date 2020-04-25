@@ -9,7 +9,7 @@ class DCEC(keras.Model):
                  latent_space: Tuple[int, int, int] = (32, 64, 128, 10),
                  kernels: Tuple[int, int, int] = (5, 5, 3),
                  strides: Tuple[int, int, int] = (2, 2, 2),
-                 regularization: Tuple[float, float, float] = (0.0, 0.0, 0.0, 0.0, 1.0),
+                 regularization: Tuple[float, float, float] = (0.0, 0.0, 0.0, 1.0, 0.0),
                  use_dropout: bool = False,
                  use_batchnorm: bool = False,
                  dropout_percentages: Tuple[float, float, float, float] = None):
@@ -22,12 +22,13 @@ class DCEC(keras.Model):
 
         self.conv1 = keras.layers.Conv2D(filters=latent_space[0],
                                          kernel_size=kernels[0],
-                                         stride=strides[0],
+                                         strides=strides[0],
                                          padding='same',
                                          activation='relu',
                                          name='conv1',
                                          input_shape=input_shape,
-                                         activity_regularizer=keras.regularizers.l2(regularization[0]))
+                                         activity_regularizer=keras.regularizers.l2(regularization[0]),
+                                         data_format='channels_last')
         if use_batchnorm:
             self.batch_norm1 = keras.layers.BatchNormalization(axis=1)
         if use_dropout:
@@ -38,7 +39,8 @@ class DCEC(keras.Model):
                                          padding='same',
                                          activation='relu',
                                          name='conv2',
-                                         activity_regularizer=keras.regularizers.l2(regularization[1]))
+                                         activity_regularizer=keras.regularizers.l2(regularization[1]),
+                                         data_format='channels_last')
         if use_batchnorm:
             self.batch_norm2 = keras.layers.BatchNormalization(axis=1)
         if use_dropout:
@@ -49,7 +51,8 @@ class DCEC(keras.Model):
                                          padding='valid',
                                          activation='relu',
                                          name='conv3',
-                                         activity_regularizer=keras.regularizers.l2(regularization[2]))
+                                         activity_regularizer=keras.regularizers.l2(regularization[2]),
+                                         data_format='channels_last')
         if use_batchnorm:
             self.batch_norm3 = keras.layers.BatchNormalization(axis=1)
         if use_dropout:
@@ -71,8 +74,7 @@ class DCEC(keras.Model):
                                          activation='relu')
 
         # This following line was adopted from: https://github.com/XifengGuo/DCEC/blob/master/ConvAE.py
-        self.reshape = keras.layers.Reshape((int(input_shape[0]/8), int(input_shape[0]/8)),
-                                            input_shape=(latent_space[2]*int(input_shape[0]/8)*int(input_shape[0]/8)))
+        self.reshape = keras.layers.Reshape((int(input_shape[0]/8), int(input_shape[0]/8), latent_space[2]))
 
         self.deconv1 = keras.layers.Conv2DTranspose(filters=latent_space[1],
                                                     kernel_size=kernels[2],
@@ -116,13 +118,13 @@ class DCEC(keras.Model):
             x = self.batch_norm4(x)
         if self.use_dropout:
             x = self.dropout4(x)
-        embedding = x.copy()
+        embedding = x
         x = self.dense2(x)
         x = self.reshape(x)
         x = self.deconv1(x)
         x = self.deconv2(x)
         x = self.deconv3(x)
-        return x, embedding
+        return x
 
 
 
