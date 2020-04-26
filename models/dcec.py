@@ -1,6 +1,8 @@
 import keras
 import numpy as np
 from typing import Tuple
+from sklearn.preprocessing import Normalizer
+import tensorflow as tf
 
 class DCEC(keras.Model):
 
@@ -9,7 +11,7 @@ class DCEC(keras.Model):
                  latent_space: Tuple[int, int, int] = (32, 64, 128, 10),
                  kernels: Tuple[int, int, int] = (5, 5, 3),
                  strides: Tuple[int, int, int] = (2, 2, 2),
-                 regularization: Tuple[float, float, float] = (0.0, 0.0, 0.0, 1.0, 0.0),
+                 regularization: Tuple[float, float, float] = (0.0, 0.0, 0.0, 0.0, 0.0),
                  use_dropout: bool = False,
                  use_batchnorm: bool = False,
                  dropout_percentages: Tuple[float, float, float, float] = None):
@@ -114,11 +116,11 @@ class DCEC(keras.Model):
             x = self.dropout3(x)
         x = self.flatten(x)
         x = self.dense1(x)
+        x = tf.keras.backend.l2_normalize(x, axis=0)
         if self.use_batchnorm:
             x = self.batch_norm4(x)
         if self.use_dropout:
             x = self.dropout4(x)
-        embedding = x
         x = self.dense2(x)
         x = self.reshape(x)
         x = self.deconv1(x)
