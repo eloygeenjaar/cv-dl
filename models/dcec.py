@@ -4,7 +4,7 @@ from typing import Tuple
 from sklearn.preprocessing import Normalizer
 import tensorflow as tf
 
-class DCEC(keras.Model):
+class DCEC(keras.models.Model):
 
     def __init__(self,
                  input_shape: Tuple[int, int, int] = (28, 28, 1),
@@ -20,7 +20,9 @@ class DCEC(keras.Model):
         self.use_dropout = use_dropout
         self.use_batchnorm = use_batchnorm
 
-        ### Encoding part
+        # Encoding part
+
+        self.inputs = keras.layers.Input(input_shape)
 
         self.conv1 = keras.layers.Conv2D(filters=latent_space[0],
                                          kernel_size=kernels[0],
@@ -28,13 +30,14 @@ class DCEC(keras.Model):
                                          padding='same',
                                          activation='relu',
                                          name='conv1',
-                                         input_shape=input_shape,
                                          activity_regularizer=keras.regularizers.l2(regularization[0]),
                                          data_format='channels_last')
+
         if use_batchnorm:
             self.batch_norm1 = keras.layers.BatchNormalization(axis=1)
         if use_dropout:
             self.dropout1 = keras.layers.Dropout(dropout_percentages[0])
+
         self.conv2 = keras.layers.Conv2D(filters=latent_space[1],
                                          kernel_size=kernels[1],
                                          strides=strides[1],
@@ -43,6 +46,7 @@ class DCEC(keras.Model):
                                          name='conv2',
                                          activity_regularizer=keras.regularizers.l2(regularization[1]),
                                          data_format='channels_last')
+
         if use_batchnorm:
             self.batch_norm2 = keras.layers.BatchNormalization(axis=1)
         if use_dropout:
@@ -55,6 +59,7 @@ class DCEC(keras.Model):
                                          name='conv3',
                                          activity_regularizer=keras.regularizers.l2(regularization[2]),
                                          data_format='channels_last')
+
         if use_batchnorm:
             self.batch_norm3 = keras.layers.BatchNormalization(axis=1)
         if use_dropout:
@@ -70,7 +75,7 @@ class DCEC(keras.Model):
         if use_dropout:
             self.dropout4 = keras.layers.Dropout(dropout_percentages[3])
 
-        ### Decoding part
+        # Decoding part
         # This following line was adopted from: https://github.com/XifengGuo/DCEC/blob/master/ConvAE.py
         self.dense2 = keras.layers.Dense(units=latent_space[2]*int(input_shape[0]/8)*int(input_shape[0]/8),
                                          activation='relu')
@@ -104,16 +109,19 @@ class DCEC(keras.Model):
             x = self.batch_norm1(x)
         if self.use_dropout:
             x = self.dropout1(x)
+        x = tf.keras.backend.l2_normalize(x, axis=0)
         x = self.conv2(x)
         if self.use_batchnorm:
             x = self.batch_norm2(x)
         if self.use_dropout:
             x = self.dropout2(x)
+        x = tf.keras.backend.l2_normalize(x, axis=0)
         x = self.conv3(x)
         if self.use_batchnorm:
             x = self.batch_norm3(x)
         if self.use_dropout:
             x = self.dropout3(x)
+        x = tf.keras.backend.l2_normalize(x, axis=0)
         x = self.flatten(x)
         x = self.dense1(x)
         x = tf.keras.backend.l2_normalize(x, axis=0)
@@ -128,14 +136,22 @@ class DCEC(keras.Model):
         x = self.deconv3(x)
         return x
 
-
-
-
-
-
-
-
-
-
-
-
+model = keras.models.Sequential()
+model.add(keras.layers.Conv2D(filters=32, kernels=5, strides=2, input_dim=(28,28), activation='relu', padding='same'))
+model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
+model.add(keras.layers.Conv2D(filters=64, kernels=5, strides=2, activation='relu', padding='same'))
+model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
+model.add(keras.layers.Conv2D(filters=128, kernels=3, strides=2, activation='relu', padding='valid'))
+model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
+model.add(keras.layers.Flatten())
+model.add(keras.layers.Dense(units=3))
+model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
+model.add(keras.layers.Dense(units=1152))
+model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
+model.add(keras.layers.Conv2DTranspose(filters=64, kernel_size=3, strides=2, padding='valid', activation='relu'))
+model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
+model.add(keras.layers.Conv2DTranspose(filters=32, kernel_size=5, strides=2, padding='same', activation='relu'))
+model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
+model.add(keras.layers.Conv2DTranspose(filters=128, kernel_size=5, strides=2, padding='same', activation='relu'))
+model.compile(optimizer='adam',
+                  loss='mse')
