@@ -1,0 +1,8 @@
+.DS_Store
+.idea
+.ipynb_checkpoints
+*.h5
+syllabus
+papers
+chapters
+*__pycache__
