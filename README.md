@@ -63,3 +63,31 @@ Citation: <cite> Aytekin, C., Ni, X., Cricri, F., & Aksu, E. (2018, July). Clust
   * DCEC with proposed L2 norm, but with reconstrution error per sample as
 anomaly sore
 
+## Tests:
+The following is the template for the name of the test, each part of the name is
+separated using an underscore:
+* The first letters are the type of model: DCEC, IDEC or DEC. 
+* The input shape, e.g. 500\_500
+* The output shape, e.g. 200\_200 or 500\_500
+* The number of parametrised layers in the encoder (CONV and DENSE layers)
+* The number of parametrised layers in the decoder (CONV and DENSE layers)
+* If the encoder is regularized add REGEN
+* If the decoder is regularized add REGDE
+* Size of embedding space
+* Number of dense layers in the encoder
+* Number of dense layers in the decoder
+
+An example of a name would be: DCEC\_500\_500\_200\_200\_8\_5\_REGEN\_256\_1\_1
+Which is a convolutional autoencoder, with an input shape of (500, 500) an
+output shape of (200, 200), 7 conv layers and 1 dense layer in the encoder, 1
+dense layer and 4 conv\_transpose layers in the decoder and regularisation on
+the layers in the encoder. The embedding space size is 256-dimensional.
+
+## Results
+| Name                                           | Epochs | Tr-loss | Va-loss | Te-acc |
+|------------------------------------------------|--------|---------|---------|--------|
+|DCEC\_500\_500\_200\_200\_8\_5\_REGEN\_256\_1\_1| 200    |         |         |        |
+
+Tr-loss = Training loss after training epochs
+Va-loss = Validation loss after training epochs
+Te-acc = The accuracy on the test set (with labels)
