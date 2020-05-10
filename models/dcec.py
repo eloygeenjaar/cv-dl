@@ -4,7 +4,7 @@ from typing import Tuple
 from sklearn.preprocessing import Normalizer
 import tensorflow as tf
 
-class DCEC(keras.models.Model):
+class DCEC(keras.models.Sequential):
 
     def __init__(self,
                  input_shape: Tuple[int, int, int] = (28, 28, 1),
@@ -136,22 +136,3 @@ class DCEC(keras.models.Model):
         x = self.deconv3(x)
         return x
 
-model = keras.models.Sequential()
-model.add(keras.layers.Conv2D(filters=32, kernels=5, strides=2, input_dim=(28,28), activation='relu', padding='same'))
-model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
-model.add(keras.layers.Conv2D(filters=64, kernels=5, strides=2, activation='relu', padding='same'))
-model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
-model.add(keras.layers.Conv2D(filters=128, kernels=3, strides=2, activation='relu', padding='valid'))
-model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
-model.add(keras.layers.Flatten())
-model.add(keras.layers.Dense(units=3))
-model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
-model.add(keras.layers.Dense(units=1152))
-model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
-model.add(keras.layers.Conv2DTranspose(filters=64, kernel_size=3, strides=2, padding='valid', activation='relu'))
-model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
-model.add(keras.layers.Conv2DTranspose(filters=32, kernel_size=5, strides=2, padding='same', activation='relu'))
-model.add(keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=0)))
-model.add(keras.layers.Conv2DTranspose(filters=128, kernel_size=5, strides=2, padding='same', activation='relu'))
-model.compile(optimizer='adam',
-                  loss='mse')
