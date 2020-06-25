@@ -1,3 +1,5 @@
+import keras
+
 def L_net(pretrained_weights = None,
           input_size = (128,128,1),
           embedding_size = 128,
