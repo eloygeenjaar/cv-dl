@@ -1,5 +1,9 @@
+import tensorflow as tf
 from tensorflow import keras
 from pathlib import Path
+import numpy as np
+from typing import Tuple
+
 
 class ChestXRayDataLoaderV2(keras.utils.Sequence):
     """
