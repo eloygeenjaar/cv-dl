@@ -1,3 +1,4 @@
+import tensorflow as tf
 from tensorflow import keras
 
 def L_net(pretrained_weights = None,
