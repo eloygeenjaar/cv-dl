@@ -29,7 +29,7 @@ class ChestXRayDataLoaderV2(keras.utils.Sequence):
         self.extension: str = extension
         self.indexes: np.ndarray = np.array([])
         self.samples = []
-        self.layout = (2,2)
+        self.layout = (3,2)
 
         self.file_gen_healthy = self.path.glob(f'NORMAL/*{self.extension}')
         healthy_files = [f for f in self.file_gen_healthy if f.is_file()]
