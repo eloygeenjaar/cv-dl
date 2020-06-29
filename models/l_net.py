@@ -33,7 +33,7 @@ def L_net(pretrained_weights = None,
     rs = keras.layers.Conv2D(embedding_size, 3, strides=(1,1), padding = 'same', name='embeddings')(pool4)
   if (not fully_conv) and lambda_normalization:
     dense = keras.layers.Dense(embedding_size)(flatten)
-    emb = keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=1), name='embedding')(dense)
+    emb = keras.layers.Lambda(lambda x: tf.keras.backend.l2_normalize(x, axis=1), name='embeddings')(dense)
     dec = keras.layers.Dense(8*8*128, name='dense-dec')(emb)
     rs = keras.layers.Reshape((8,8,128), name='reshape')(dec)
   if (not fully_conv) and (not lambda_normalization):
