@@ -245,7 +245,6 @@ class ChestXRayDataLoaderV1(keras.utils.Sequence):
             img = self.__process_path(str(self.files[indexes[i]]))
 
             # Grid size of sampling 
-            print(img.shape)
             patches_shape = np.ceil(img.shape[1] / self.window_size[0]), np.ceil(img.shape[2] / self.window_size[1])
 
             # Determine squares that should be samples
