@@ -205,7 +205,6 @@ class ChestXRayDataLoaderV1(keras.utils.Sequence):
         col_ix[col_ix >= columns] = columns -1
 
         # print(list(zip(row_ix, col_ix)))
-        print(len(list(zip(row_ix, col_ix))), len(np.unique(list(zip(row_ix, col_ix)), axis=0)), list(zip(row_ix, col_ix)))
         self.samples += list(zip(row_ix, col_ix))
         return row_ix, col_ix
 
