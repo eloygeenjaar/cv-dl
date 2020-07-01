@@ -17,6 +17,7 @@ class ChestXRayDataLoaderV2(keras.utils.Sequence):
                  n_channels: int,
                  batch_size: int,
                  n_patches_per_file: int,
+                 layout: Tuple[int, int] = (3,2),
                  shuffle: bool = True,
                  extension: str = '.jpeg'):
 
@@ -29,7 +30,7 @@ class ChestXRayDataLoaderV2(keras.utils.Sequence):
         self.extension: str = extension
         self.indexes: np.ndarray = np.array([])
         self.samples = []
-        self.layout = (3,2)
+        self.layout = layout
 
         self.file_gen_healthy = self.path.glob(f'NORMAL/*{self.extension}')
         healthy_files = [f for f in self.file_gen_healthy if f.is_file()]
@@ -363,8 +364,9 @@ class ChestXRayDataLoaderV0(keras.utils.Sequence):
 
             patches = self.__sliding_window_patches(np.asarray(img))
 
-            indices = tf.random.shuffle(range(0, patches.shape[0]))[0:self.n_patches_per_file]
-            
+            # indices = tf.random.shuffle(range(0, patches.shape[0]))[0:self.n_patches_per_file]
+            indices = tf.math.floormod(tf.random.shuffle(range(0, max(patches.shape[0], self.n_patches_per_file)))[0:self.n_patches_per_file], patches.shape[0])
+
             selected_patches = tf.gather(patches, indices)
             
             tensor_list.append(selected_patches)
