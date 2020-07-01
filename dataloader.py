@@ -363,8 +363,9 @@ class ChestXRayDataLoaderV0(keras.utils.Sequence):
 
             patches = self.__sliding_window_patches(np.asarray(img))
 
-            indices = tf.random.shuffle(range(0, patches.shape[0]))[0:self.n_patches_per_file]
-            
+            # indices = tf.random.shuffle(range(0, patches.shape[0]))[0:self.n_patches_per_file]
+            indices = tf.math.floormod(tf.random.shuffle(range(0,max(patches.shape[0], self.n_patches_per_file)))[0:3], patches.shape[0])
+
             selected_patches = tf.gather(patches, indices)
             
             tensor_list.append(selected_patches)
