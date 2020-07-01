@@ -6,7 +6,8 @@ def L_net(pretrained_weights = None,
           embedding_size = 128,
           lambda_normalization = False,
           concatenation = False,
-          fully_conv=False):
+          fully_conv=False,
+          concat_diff=False):
   inputs = keras.Input(input_size)
   conv1 = keras.layers.Conv2D(16, 3, strides=(1,1), activation = 'relu', padding = 'same', name='conv1-1')(inputs)
   conv1 = keras.layers.Conv2D(16, 3, strides=(1,1), activation = 'relu', padding = 'same', name='conv1-2')(conv1)
@@ -44,19 +45,35 @@ def L_net(pretrained_weights = None,
 
   up1 = keras.layers.Conv2DTranspose(128, 3, strides=(1,1), activation='relu', padding='same', name='up1-1')(keras.layers.UpSampling2D(size = (2,2))(rs))
   if concatenation:
-    up1 = keras.layers.concatenate([pool3,up1], axis = 3, name='concat1')
+    up1 = keras.layers.concatenate([pool3, up1], axis = 3, name='concat1')
+  if concat_diff:
+    non_diff1 = keras.layers.Lambda(lambda x: tf.gather(x, list(range(64)), axis=3))(up1)
+    take_diff1 = keras.layers.Lambda(lambda x: tf.gather(x, list(range(64, 128)), axis=3))(up1)
+    diff1 = keras.layers.Subtract()([pool3, take_diff1])
+    up1 = keras.layers.concatenate([diff1, non_diff1], axis=3, name='concat1')
+
   up1 = keras.layers.Conv2DTranspose(128, 3, strides=(1,1), activation='relu', padding='same', name='up1-2')(up1)
 
   up2 = keras.layers.Conv2DTranspose(64, 3, strides=(1,1), activation='relu', padding='same', name='up2-1')(keras.layers.UpSampling2D(size = (2,2))(up1))
   if concatenation:
     up2 = keras.layers.concatenate([pool2,up2], axis = 3, name='concat2')
+  if concat_diff:
+    non_diff2 = keras.layers.Lambda(lambda x: tf.gather(x, list(range(32)), axis=3))(up2)
+    take_diff2 = keras.layers.Lambda(lambda x: tf.gather(x, list(range(32, 64)), axis=3))(up2)
+    diff2 = keras.layers.Subtract()([pool2, take_diff2])
+    up2 = keras.layers.concatenate([diff2, non_diff2], axis=3, name='concat2')
+
   up2 = keras.layers.Conv2DTranspose(64, 3, strides=(1,1), activation='relu', padding='same', name='up2-2')(up2)
 
   up3 = keras.layers.Conv2DTranspose(32, 3, strides=(1,1), activation='relu', padding='same', name='up3-1')(keras.layers.UpSampling2D(size = (2,2))(up2))
   if concatenation:
     up3 = keras.layers.concatenate([pool1,up3], axis = 3, name='concat3')
+  if concat_diff:
+    non_diff3 = keras.layers.Lambda(lambda x: tf.gather(x, list(range(16)), axis=3))(up3)
+    take_diff3 = keras.layers.Lambda(lambda x: tf.gather(x, list(range(16, 32)), axis=3))(up3)
+    diff3 = keras.layers.Subtract()([pool1, take_diff3])
+    up3 = keras.layers.concatenate([diff3, non_diff3], axis=3, name='concat3')
   up3 = keras.layers.Conv2DTranspose(32, 3, strides=(1,1), activation='relu', padding='same', name='up3-2')(up3)
-
   up4 = keras.layers.Conv2DTranspose(16, 3, strides=(1,1), activation='relu', padding='same', name='up4-1')(keras.layers.UpSampling2D(size = (2,2))(up3))
   up4 = keras.layers.Conv2DTranspose(16, 3, strides=(1,1), activation='relu', padding='same', name='up4-2')(up4)
   up4 = keras.layers.Conv2DTranspose(1, 3, strides=(1,1), activation='relu', padding='same', name='up4-3')(up4)
